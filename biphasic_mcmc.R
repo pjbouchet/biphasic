@@ -194,8 +194,8 @@ rcensoring <- sum(is.censored) > 0
 
 # MCMC ----------------------------------------------------------
 
-n.burn.in <- 10000
-n.iter <- 10000
+n.burn.in <- 15000
+n.iter <- 50000
 tot.iter <- n.iter + n.burn.in
 n.thin <- 1
 n.chains <- 1
