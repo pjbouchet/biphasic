@@ -105,13 +105,21 @@ densplot <- function(params = c("beta", "nu", "omega", "psi", "tau", "psi_i"),
   par(mfrow = c(3, 4))
   
   for(pp in params.col){
-    d1 <- density(jagsdat[, pp], adjust = 2)
-    d2 <- density(mcmcdat[, pp], adjust = 2)
-    xlimits <- c(min(c(d1$x, d2$x)), max(c(d1$x, d2$x)))
-    ylimits <- c(0, max(c(d1$y, d2$y)))
-    plot(d1, main = pp, 
-         xlim = xlimits, ylim = ylimits, col = col.1)
-    lines(d2, main = pp, xlim = xlimits, col = col.2)
+    if(grepl(pattern = "k.ij", x = pp)){
+      jags.tb <- c(sum(jagsdat[, pp]==1), sum(jagsdat[, pp]==2))
+      mcmc.tb <- c(sum(mcmcdat[, pp]==1), sum(mcmcdat[, pp]==2))
+      barplot(t(cbind(jags.tb, mcmc.tb)), beside = TRUE, main = pp,
+              col = c(col.1, col.2), names.arg = 1:2)
+    } else {
+      d1 <- density(jagsdat[, pp], adjust = 2)
+      d2 <- density(mcmcdat[, pp], adjust = 2)
+      xlimits <- c(min(c(d1$x, d2$x)), max(c(d1$x, d2$x)))
+      ylimits <- c(0, max(c(d1$y, d2$y)))
+      plot(d1, main = pp, 
+           xlim = xlimits, ylim = ylimits, col = col.1)
+      lines(d2, main = pp, xlim = xlimits, col = col.2)
+    }
+
   }
   
   if(show.legend) {plot.new(); legend("topleft", c("jags", "R"), lty = c(1, 1), col = c(col.1, col.2))}
